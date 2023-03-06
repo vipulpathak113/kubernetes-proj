@@ -1,11 +1,9 @@
 # Kubernetes Introduction
 
-1. Why do we need containers?
-
+**1. Why do we need containers?**
     So that all services we need should be in isolated environments and it can be shipped and installed with the same config as developed.
 
-2. What are containers?
-
+**2. What are containers?**
     Containers are **completely isolated** environments.They have their own processes, own network interfaces and their own mount like VM. But they share the **same OS kernel**.
 
 3. What is container orchestration?
