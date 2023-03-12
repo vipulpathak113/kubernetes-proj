@@ -23,3 +23,29 @@
 5. **What is kubernetes?**
 
     It is an orchestration technology used to orchestrate deployment and management of hundred or thousands of container in clustered environment. 
+
+
+6. **What are nodes?**
+
+    It is a machine, physical or virtual on which kubernetes is installed. It is a worker machine where containers will be launched by kubernetes.
+
+7. **What are clusters?**
+
+    It is a set of nodes grouped together.This way if one node fails your application will be still accessible from other nodes. Having multiple nodes helps in sharing the load as well.
+
+8. **What are Master Node?**
+
+    It is another node with kubernetes installed and is configured as Master.
+    The master watches over the nodes in cluster and is responsible for actual orchesteration of containers on the worker nodes.
+
+9. **What components we get after installing kubernetes on the system?**
+
+    An API Server, etcd service, a kubelet service, a Container Runtime, Controllers and Schedulers.
+
+9. **What is an API Server?**
+
+    It acts as the frontend for kubernetes. The users, management devices, command line interfaces all talk to API server to interact with kubernetes cluster.
+    
+9. **What is an etcd key store?**
+
+    It is a distrbuted reliable key value store by Kubernetes to store all data used to manage the cluster.         
