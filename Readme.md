@@ -75,20 +75,22 @@
 
      - [ ] Create a new container instance within same pod
      - [x] Create a new pod with new container instance of the same application 
-     <br/><br/>
+     <br/>
 
       *Pods usually have one to one relationship with containers running your application.*
 
     We can create multiple container in a single pod if both are of different kind.(Example helper container)
     
     For scaling purpose we should always create new pod with new instance of container of same application.
+ 
+   Some kubectl commands:
 
-Some kubectl commands:
+   ```kubectl run nginx --image=nginx ```
 
-```kubectl run nginx --image=nginx ```
+   This command will create a new pod with name nginx using docker image named nginx(from docker hub)
 
-This command will create a new pod with name nginx using docker image named nginx(from docker hub)
+   --------------
 
-Each pod get an internal IP of its own within kubernetes cluster.
+   Each pod gets an internal IP of its own within kubernetes cluster.
 
 
