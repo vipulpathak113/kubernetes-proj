@@ -48,4 +48,28 @@
     
 9. **What is an etcd key store?**
 
-    It is a distrbuted reliable key value store by Kubernetes to store all data used to manage the cluster.         
+    It is a distrbuted reliable key value store by Kubernetes to store all data used to manage the cluster. When you have multiple nodes and multiple Masters in your cluster, etcd stores all that information is a distributed manner.
+    It is also responsible for implementing locks within cluster to ensure that there are no conflicts between the masters.
+
+10. **What are schedulers?**
+
+    It is responsible for distributing work or containers. It looks for newly created containers and assign them to nodes. 
+
+11. **What are controllers?**
+
+    They are brain behind orchesteration. The are reponsible for noticing and responding when nodes,container or end points goes down. It makes decisions to bring up new containers in such cases.
+
+12. **What is Container Runtime?**
+
+    They are underlying software used to run containers. Ex. Docker.
+
+12. **Whate is kubelet?**
+
+    It is an agent that runs on each node in the cluster. It is responsible for making sure containers are running on the nodes as expected. 
+
+12. **Whate is kubectl?**
+
+    It is a command line tool which is used to deploy and manage applications on a kubernetes cluster. To get the cluster information, to get the status of other nodes in the cluster.
+
+    kubectl run command is used to deploy an application on the cluster.
+    ```kubectl run hello-minikube ```
