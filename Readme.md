@@ -70,27 +70,68 @@
     
     Containers are not directly deloyed on the worker node by kubernetes. It is encapsulated with an object call pods. Pods is the smallest object in the kubernetes.
 
+    Each pod gets an internal IP of its own within kubernetes cluster
+
 
 15. **What should we do when more resources are added?**
 
      - [ ] Create a new container instance within same pod
      - [x] Create a new pod with new container instance of the same application 
-     <br/>
+     <br/><br>
 
-      *Pods usually have one to one relationship with containers running your application.*
+      **Pods usually have one to one relationship with containers running your application.**
 
     We can create multiple container in a single pod if both are of different kind.(Example helper container)
     
     For scaling purpose we should always create new pod with new instance of container of same application.
  
-   Some kubectl commands:
+ 16. **Command to create pod using kubectl :**
 
-   ```kubectl run nginx --image=nginx ```
+      ```kubectl run nginx --image=nginx ```
 
-   This command will create a new pod with name nginx using docker image named nginx(from docker hub)
+      This command will create a new pod with name nginx using docker image named nginx(from docker hub)
 
-   --------------
+      --------------
 
-   Each pod gets an internal IP of its own within kubernetes cluster.
+
+**PODS with YAML:**
+
+*It has 4 root level mandatory properties:*
+
+   - **apiVersion** > Version of Kubernetes API using to create the objects. Ex: v1,apps/v1
+   - **kind** > Refers type of object. Ex: Pod,Service, ReplicaSet, Deployment
+   - **metadata** > Data about the objects. Ex: name,labels. Metadata does not accept any key-value pair, it should be some specific values
+   - **spec** >  Additional information regarding object to be created
+
+   Example for pod YAML file:
+
+   ```yml
+   // test.yml
+
+   apiVersion: v1
+   kind: Pod
+   metadata:
+      name: myapp-pod
+      labels:
+         app: myapp
+         type: front-end
+   spec:
+    containers:
+      - name: nginx-container
+        image: nginx
+   
+   ```
+- To create pod using yaml file we use command:
+
+  ```kubectl apply -f test.yml ```
+
+- To get information about pods:
+   
+   ```kubectl get pods```
+
+- To get information of specific pod:
+
+  ```kubectl describe pod myapp-pod ```
+
 
 
