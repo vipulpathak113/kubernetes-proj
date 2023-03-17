@@ -132,6 +132,18 @@
 - To get information of specific pod:
 
   ```kubectl describe pod myapp-pod ```
+  
+---------------------
+
+**REPLICATION CONTROLLER AND REPLICA SET** 
+
+**Replication Controller:** It helps in running muliple instances of a single pod in kubernetes cluster, *thus providing high availibilty*. It make sure that that number of pods always exists.
+
+   - It also helps in creating multiple pods to share the load across them.
+
+   - If no. of users increases then we will deploy additional pod to balance the load across the two pods.
+   - If further demand increases and we run out of resources on the first node we could deploy additional ports on other nodes in the cluster.
+
 
 
 
