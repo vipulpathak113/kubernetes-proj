@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+
+kind: Deployment
+# Deployment manages replicaset
+# If image version is changed then new replicaset will be created
+
+metadata:
+  name: kube-proj
+
+  labels:
+    app: kube-proj # label should be same so that mapping can be made
+
+spec:
+  # Replicaset is interlinked with image version, if image is changed then new replicaset will be created and old will be not deleted but its pod will be deleted
+  # Only 1 replicaset will be active per deployment
+  # ReplicaSet manages pods , if one pods goes down then it will create new pods
+  # Here replicas: 3 means 3 pods will be created with same image and load balancer will balance in these 3 pods
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: kube-proj
+  minReadySeconds: 10 # it means that new replicaset will wait for 10 secs before creating new pod and deleting old pod from replicaset
+  strategy:
+    rollingUpdate:
+      maxSurge: 1 # it means that new replicaset will create initially 1 pod on image changing version
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: kube-proj
+
+    spec:
+      containers:
+        - name: kube-proj
+
+          image: vipulpathak/react-app
+
+          ports:
+            - containerPort: 80
