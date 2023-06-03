@@ -140,6 +140,8 @@
 
     ***
 
+- [More questions related to kubernetes](https://medium.com/devops-dudes/cracking-the-code-on-advanced-kubernetes-interview-questions-65f99359bfd9)
+
 **PODS with YAML:**
 
 _It has 4 root level mandatory properties:_
