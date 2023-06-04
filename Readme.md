@@ -1,4 +1,4 @@
-# Kubernetes Introduction
+# Kubernetes Notes
 
 1. **Why do we need containers?**
 
@@ -138,13 +138,11 @@
 
     A DaemonSet in Kubernetes ensures that a Pod is running on all nodes in a cluster, while a Deployment manages the deployment of multiple Pods and ensures a specified number of replica Pods are running at any given time.
 
-    ***
-
 - [More questions related to kubernetes](https://medium.com/devops-dudes/cracking-the-code-on-advanced-kubernetes-interview-questions-65f99359bfd9)
 
 **PODS with YAML:**
 
-_It has 4 root level mandatory properties:_
+It has 4 root level mandatory properties:\_
 
 - **apiVersion** > Version of Kubernetes API using to create the objects. Ex: v1,apps/v1
 - **kind** > Refers type of object. Ex: Pod,Service, ReplicaSet, Deployment
@@ -198,3 +196,74 @@ spec:
 - Replicaset is interlinked with image version, if image version is changed then new replicaset will be created and old will be not deleted but its pod will be deleted
 - **Only 1 replicaset will be active per deploymen**t
 - ReplicaSet manages pods , if one pods goes down then it will create new pods
+
+---
+
+**ClusterIP:**
+
+A ClusterIP service is the default Kubernetes service. It gives you a service inside your cluster that other apps inside your cluster can access. There is no external access.
+
+We can access using Kubernetes proxy!
+
+```yml
+$ kubectl proxy --port=8080
+```
+
+- **When to use:**
+
+  - Debugging your services, or connecting to them directly from your laptop for some reason
+  - Allowing internal traffic, displaying internal dashboards, etc.
+
+- **Drawbacks:**
+  This method requires you to run kubectl as an authenticated user, you should NOT use this to expose your service to the internet or use it for production services.
+
+---
+
+**NodePort:**
+
+A NodePort service is the most primitive way to get external traffic directly to your service. NodePort, as the name implies, opens a specific port on all the Nodes (the VMs), and any traffic that is sent to this port is forwarded to the service.
+
+- **When to use:**
+  If you are running a service that doesn’t have to be always available, or you are very cost sensitive, this method will work for you.
+
+- **Drawbacks:**
+  - You can only have one service per port
+  - You can only use ports 30000–32767
+  - If your Node/VM IP address change, you need to deal with that
+
+---
+
+**LoadBalancer:**
+
+A LoadBalancer service is the standard way to expose a service to the internet. On GKE, this will spin up a Network Load Balancer that will give you a single IP address that will forward all traffic to your service.
+
+- **When to use:**
+  If you want to directly expose a service, this is the default method. All traffic on the port you specify will be forwarded to the service. There is no filtering, no routing, etc. This means you can send almost any kind of traffic to it, like HTTP, TCP, UDP, Websockets, gRPC, or whatever.
+
+- **Drawbacks:**
+  Each service you expose with a LoadBalancer will get its own IP address, and you have to pay for a LoadBalancer per exposed service, which can get expensive!
+
+---
+
+**Ingress:**
+
+- API object in k8s
+- Expose HTTP and HTTPS routes from outside the cluster
+- Path based routing and host based routing
+- Load Balancing and SSL Termination
+- **Types of Ingress controllers-** the Google Cloud Load Balancer, Nginx, Contour, Istio,etc.
+- Plugins for Ingress controllers, like the cert-manager, that can automatically provision SSL certificates for your services.
+
+  **Advantages:**
+
+  Ingress is the most useful if you want to expose multiple services under the same IP address, and these services all use the same L7 protocol (typically HTTP). You only pay for one load balancer if you are using the native GCP integration, and because Ingress is “smart” you can get a lot of features out of the box (like SSL, Auth, Routing, etc)
+
+- **SSL Termination:** For enabling it we have to perform various steps:
+
+  - Install **cert-manager** in cluster
+  - Create Issuers: Issuers and Cluster Issuers are kubernetes resources that represent certificate authorities (CA) that are able to generate signed certificates (ex. stage-issuer)
+  - Update Ingress Resources(annotations and tls)
+  - Create prod issuer
+    <br/>
+
+  - ![ingress](https://devopscube.com/wp-content/uploads/2022/03/image-3.png)
