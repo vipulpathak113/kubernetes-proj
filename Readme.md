@@ -194,7 +194,7 @@ spec:
 **Replica Set:**
 
 - Replicaset is interlinked with image version, if image version is changed then new replicaset will be created and old will be not deleted but its pod will be deleted
-- **Only 1 replicaset will be active per deploymen**t
+- **Only 1 replicaset will be active per deployment**
 - ReplicaSet manages pods , if one pods goes down then it will create new pods
 
 ---
@@ -251,12 +251,12 @@ A LoadBalancer service is the standard way to expose a service to the internet. 
 - Expose HTTP and HTTPS routes from outside the cluster
 - Path based routing and host based routing
 - Load Balancing and SSL Termination
-- **Types of Ingress controllers-** the Google Cloud Load Balancer, Nginx, Contour, Istio,etc.
+- **Types of Ingress controllers:** the Google Cloud Load Balancer, Nginx, Contour, Istio,etc.
 - Plugins for Ingress controllers, like the cert-manager, that can automatically provision SSL certificates for your services.
 
   **Advantages:**
 
-  Ingress is the most useful if you want to expose multiple services under the same IP address, and these services all use the same L7 protocol (typically HTTP). You only pay for one load balancer if you are using the native GCP integration, and because Ingress is “smart” you can get a lot of features out of the box (like SSL, Auth, Routing, etc)
+  Ingress is the most useful if you want to expose multiple services under the same IP address, and these services all use the same L7 protocol (typically HTTP). You only pay for one load balancer if you are using the native GCP integration, and because Ingress is "smart" you can get a lot of features out of the box (like SSL, Auth, Routing, etc)
 
 - **SSL Termination:** For enabling it we have to perform various steps:
 
@@ -296,19 +296,23 @@ All user access in kubernetes is managed by API Server whether we access using t
   - **Static password file :** Username name password in static password file.
   - **Static token file:** User name and token in static token file.
   - **Certificates :** Authenticate using certificates.
-  - **identity services:** Like ldap.
+  - **Identity services:** Like ldap.
 
 - **Authorization:**
   - **Node:** the kubelet access the Kube-API server to Read- Services , endpoints, nodes , pods and also to Write the node status, Pod status ..etc. These requests are handled by special Authorizer called — Node Authorizer.
-  - **ABAC (Attributes based Authorization):** Associate user with some set of permission.
+  - **ABAC (Attributes based Authorization):** Associate user with some set of permission. In this for multiple users we have to create multiple rules for it.
   - **RBAC (Role Based Authorization):** In RBAC , instead of directly associating a users or group to specific permission we define a Role. Whenever a change is required to user access, we can just modify role and it will immediately reflect for all users.
   - **Webhook:** An external service for authorization.
 
+---
+
 **Kubernetes RBAC :**
 
-RBAC (Role-Based Access Control) allows you to control access to resources within the cluster based on user roles and permissions.
+**RBAC (Role-Based Access Control)** allows you to control access to resources within the cluster based on user roles and permissions.
 
 **Role :**
+
+A Role always sets permissions **within a particular namespace**; when you create a Role, you have to specify the namespace it belongs in.
 
 The role.yaml file contains the configuration for creating a role named pod-reader. The role allows the user to perform actions like get, watch, and list on pods resources.
 
@@ -319,7 +323,7 @@ metadata:
   namespace: default
   name: pod-reader
 rules:
-  - apiGroups: [""]
+  - apiGroups: [""] # "" indicates the core API group
     resources: ["pods"]
     verbs: ["get", "watch", "list"]
 ```
@@ -340,88 +344,157 @@ kubectl get role
 
 The rolebinding.yaml file defines a role binding named read-pods that binds the pod-reader role to the user jack in the default namespace.
 
+```yml
 apiVersion: rbac.authorization.k8s.io/v1
+# This role binding allows "jane" to read pods in the "default" namespace.
+# You need to already have a Role named "pod-reader" in that namespace.
 kind: RoleBinding
 metadata:
-name: read-pods
-namespace: default
+  name: read-pods
+  namespace: default
 subjects:
-
-- kind: User
-  name: jack
+  # You can specify more than one "subject"
+  - kind: User
+    name: jane # "name" is case sensitive
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  # "roleRef" specifies the binding to a Role / ClusterRole
+  kind: Role #this must be Role or ClusterRole
+  name: pod-reader # this must match the name of the Role or ClusterRole you wish to bind to
   apiGroup: rbac.authorization.k8s.io
-  roleRef:
-  kind: Role
-  name: pod-reader
-  apiGroup: rbac.authorization.k8s.io
+```
 
 To apply this role binding:
+
+```yml
 kubectl apply -f rolebinding.yaml
+```
+
 To check the created role binding:
+
+```yml
 kubectl get rolebinding
+```
+
 To check the permissions of the jack user:
+
+```yml
 kubectl auth can-i get pod --as jack
-Cluster Role
+```
+
+**Cluster Role:**
+
+ClusterRole, by contrast, is **a non-namespaced resource**.
+
+ClusterRoles have several uses. You can use a ClusterRole to grant access to:
+
+- cluster-scoped resources (like nodes)
+- non-resource endpoints (like /healthz)
+- namespaced resources (like Pods), across all namespaces
+
 The clusterrole.yaml file contains the configuration for creating a cluster role named secret-reader. This cluster role allows the user to perform actions like get, watch, and list on secrets resources.
 
+```yml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-name: secret-reader
+  # "namespace" omitted since ClusterRoles are not namespaced
+  name: secret-reader
 rules:
-
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get", "watch", "list"]
+  - apiGroups: [""]
+    #
+    # at the HTTP level, the name of the resource for accessing Secret
+    # objects is "secrets"
+    resources: ["secrets"]
+    verbs: ["get", "watch", "list"]
+```
 
 To apply this cluster role:
+
+```yml
 kubectl apply -f clusterrole.yaml
+```
+
 To check the created cluster role:
+
+```yml
 kubectl get clusterrole
-Role Binding (Namespace-level)
+```
+
+**Role Binding (Namespace-level):**
 The rolebinding.yaml file defines a role binding named read-secrets that binds the secret-reader cluster role to the user dev in the development namespace.
 
+```yml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
 name: read-secrets
 namespace: development
 subjects:
-
-- kind: User
-  name: dev
-  apiGroup: rbac.authorization.k8s.io
-  roleRef:
+  - kind: User
+    name: dev
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
   kind: ClusterRole
   name: secret-reader
   apiGroup: rbac.authorization.k8s.io
+```
 
 To apply this role binding:
+
+```yml
 kubectl apply -f rolebinding.yaml
+```
+
 To check the created role binding:
+
+```yml
 kubectl get rolebinding
+```
+
 To check the permissions of the dev user in the development namespace:
+
+```yml
 kubectl auth can-i get secret --as dev -n development
-Cluster Role Binding
+```
+
+**Cluster Role Binding :**
 The clusterrolebinding.yaml file contains the configuration for creating a cluster role binding named read-secrets-global. This cluster role binding binds the secret-reader cluster role to the user riya globally.
 
+```yml
 apiVersion: rbac.authorization.k8s.io/v1
+# This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
 kind: ClusterRoleBinding
 metadata:
-name: read-secrets-global
+  name: read-secrets-global
 subjects:
-
-- kind: User
-  name: riya
-  apiGroup: rbac.authorization.k8s.io
-  roleRef:
+  - kind: User
+    name: manager # Name is case sensitive
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
   kind: ClusterRole
   name: secret-reader
   apiGroup: rbac.authorization.k8s.io
+```
 
 To apply this cluster role binding:
+
+```yml
 kubectl apply -f clusterrolebinding.yaml
+```
+
 To check the created cluster role binding:
+
+```yml
 kubectl get clusterrolebinding
+```
+
 To check the permissions of the riya user across all namespaces:
+
+```yml
 kubectl auth can-i get secret --as riya -A
+```
+
+**Important Note:**
+
+After you create a binding, you cannot change the Role or ClusterRole that it refers to. If you try to change a binding's roleRef, you get a validation error. If you do want to change the roleRef for a binding, you need to remove the binding object and create a replacement.
