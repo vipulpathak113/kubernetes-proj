@@ -492,9 +492,44 @@ kubectl get clusterrolebinding
 To check the permissions of the riya user across all namespaces:
 
 ```yml
-kubectl auth can-i get secret --as riya -A
+kubectl auth can-i get secret --as manager -A
 ```
 
 **Important Note:**
 
 After you create a binding, you cannot change the Role or ClusterRole that it refers to. If you try to change a binding's roleRef, you get a validation error. If you do want to change the roleRef for a binding, you need to remove the binding object and create a replacement.
+
+---
+
+**Network Policy :**
+
+The Kubernetes Network Policy lets users define a policy to control network traffic. By applying it, we can **allow or restrict** the traffic to/from any pod.
+
+Network policies can be thought of as the firewall. However, Kubernetes lacks in an integrated ability to implement the network policy. **To implement the network policy, we need to use a network plugin.**
+
+**Supported plugins:**
+  - Calico
+  - Cilium
+  - Kube-router
+  - Romana
+  - Weave Net
+
+**Unsupported plugins:**
+- Flannel  
+
+  A Network Policy can **work on all the pods within a namespace** or **we can use selectors to apply the rules** to pods with a specific label. The Network policy can be applied to ingress as well as egress traffic.  
+
+
+By means of ingress and egress rules, we can define the incoming or outgoing traffic rules from/to:
+
+- Pods with a specific label
+- Pods belonging to a namespace with a particular label
+- A combination of both rules restricts the selection of labelled pods in labelled namespaces
+- Specific IP ranges 
+
+**Ingress and Egress :**
+We can secure the networking traffic by applying the ingress and egress rules to the Network Policy in Kubernetes.
+
+- **Ingress** is incoming traffic to the pod.
+- **Egress** is outgoing traffic from the pod.
+

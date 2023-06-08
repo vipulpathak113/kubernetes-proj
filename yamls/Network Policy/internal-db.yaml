@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  role: internal-db
+  labels:
+    role: internal-db
+spec:
+  containers:
+  - name: internal-db
