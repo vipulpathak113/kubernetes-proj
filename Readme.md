@@ -517,10 +517,10 @@ Network policies can be thought of as the firewall. However, Kubernetes lacks in
 **Unsupported plugins:**
 - Flannel  
 
-  A Network Policy can **work on all the pods within a namespace** or **we can use selectors to apply the rules** to pods with a specific label. The Network policy can be applied to ingress as well as egress traffic.  
+A Network Policy can **work on all the pods within a namespace** or **we can use selectors to apply the rules** to pods with a specific label. The Network policy can be applied to ingress as well as egress traffic.  
 
 
-By means of ingress and egress rules, we can define the incoming or outgoing traffic rules from/to:
+By means of **ingress and egress rules**, we can define the incoming or outgoing traffic rules from/to:
 
 - Pods with a specific label
 - Pods belonging to a namespace with a particular label
