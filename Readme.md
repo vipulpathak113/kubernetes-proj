@@ -533,3 +533,23 @@ We can secure the networking traffic by applying the ingress and egress rules to
 - **Ingress** is incoming traffic to the pod.
 - **Egress** is outgoing traffic from the pod.
 
+---
+**Container Network Interface(CNI):**
+
+In Kubernetes, each Pod is assigned a unique IP address and can communicate with other Pods without requiring NAT. **To provide networking to Pods, Kubernetes uses Container Network Interface (CNI), a library for configuring network interfaces in Linux containers.** 
+
+**The kubelet is responsible for setting up the network for new Pods** using the CNI plugin specified in the configuration file located in the ***/etc/cni/net.d/*** directory on the node.
+
+The required CNI plugins referenced by the configuration should be installed in the ***/opt/cni/bin*** directory, which is the directory used by Kubernetes to **store the CNI plugin binaries** that manage network connectivity for Pods.
+
+**Pod Networking:**
+
+Base on the Kubernetes network model, the key concepts for Pod networking in Kubernetes include:
+
+- Each Pod has a unique cluster-wide IP address.
+- Pods can communicate with all other Pods across nodes without NAT.
+- Agents on a node can communicate with all Pods on that node.
+
+![cni](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*aTkYgjlco4w2Q2CptlSScA.png)
+
+
