@@ -552,4 +552,86 @@ Base on the Kubernetes network model, the key concepts for Pod networking in Kub
 
 ![cni](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*aTkYgjlco4w2Q2CptlSScA.png)
 
+---
+**AutoScaling in Kubernetes**
+
+**Autoscaling** is a method that dynamically scales up / down the number of computing resources that are being allocated to your application based on its needs.
+![autoscaling](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*xHPFSf2EV4_TGufv4IsC9w.png)
+
+*For Horizontal Pod Autoscaler ( HPA ) and Vertical Pod Autoscaler ( VPA )* to work it **requires the metrics** to be exported from the kubelet.
+
+Metrics Server collects resource metrics from Kubelets and exposes them in Kubernetes apiserver through Metrics API for use by Horizontal Pod Autoscaler and Vertical Pod Autoscaler.
+
+**Horizontal Pod Autoscaler (HPA):**
+
+Horizontal Pod Autoscaler **scales the number of Pods** in a Deployment, Statefulset, ReplicaSet based on CPU/Memory utilization or any custom metrics exposed by your application.
+
+```yml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: k8s-autoscaler
+spec:
+  maxReplicas: 10
+  minReplicas: 2
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: k8s-autoscaler
+  targetCPUUtilizationPercentage: 50
+```
+So this HPA says that the deployment k8s-autoscaler should have a minimum replica count of 2 all the time, and whenever the CPU utilization of the Pods reaches 50 percent, the pods should scale to 10 replicas. And when the CPU utilization comes below 50 percent the replicas will scale back to 2.
+
+![hpa](https://granulate.io/wp-content/uploads/2021/02/HPA-image-1.png)
+
+**Vertical Pod Autoscaler (VPA):**
+
+Vertical Pod Autoscaler (VPA) **automatically adjusts the CPU and Memory attributes for your Pods**. The Vertical Pod Autoscaler (VPA) will automatically recreate your pod with the suitable CPU and Memory attributes. This will free up the CPU and Memory for the other pods and help you better utilize your Kubernetes cluster.
+
+```yml
+
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: k8s-autoscaler-vpa
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       k8s-autoscaler
+  updatePolicy:
+    updateMode: "Auto"
+```
+The above Vertical Pod Autoscaler (VPA) says to automatically recreate the pods in the deployment with the CPU/Memory values given by Vertical Pod Autoscaler (VPA). If the updateMode is set to "Off" it will only give us the recommendations but it will not update the pods (in the deployments) automatically.   
+
+The VPA comes with a tool called **VPA Recommender**, which monitors the current and past resource consumption and use this data to provide recommended CPU and memory resources to be allocated for the containers.
+
+There is a limitation with this approach. If you create a Vertical Pod Autoscaler with an **updateMode of "Auto"**, the VerticalPodAutoscaler evicts a Pod if it needs to change the Pod’s resource requests. This may cause the pods to be restarted all at once causing inconsistency in our application. **To limit the restarts and to maintain consistency this situation can be handled by PodDisruptionBudget (PDB’s).**
+
+```yml
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: k8s-autoscaler-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      run: k8s-autoscaler
+```
+This PDB ensures that the 1 replica of the deploy k8s-autoscaler runs all the time without any restarts. This will eventually ensure that our application is highly available and consistent across various cluster disruptions.     
+
+![vpa](https://granulate.io/wp-content/uploads/2021/02/HPA-image-2.png)
+
+**Cluster Autoscaler:**
+
+Cluster Autoscaler is a mechanism for scaling Kubernetes resources at the infrastructure level according to a given set of scaling rules. It works by constantly monitoring cluster status, and making infrastructure-level scaling decisions.
+
+In Cluster Autoscaler, infrastructure-level scaling is triggered when one of the following events occur:
+
+- Kubernetes pods go into a pending state in the cluster without being able to be scheduled into a node due to insufficient memory or CPU. This triggers scaling up with new nodes being provisioned.
+- Kubernetes nodes are underutilized and the workloads running in those nodes can be safely rescheduled into another existing node. This triggers scaling down and removing provisioned nodes.
+
+![ca](https://granulate.io/wp-content/uploads/2021/02/HPA-image-3.webp)
+
 
