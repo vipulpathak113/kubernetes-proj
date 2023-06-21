@@ -20,6 +20,16 @@
 - When demand increases, deploy more instances of applications within seconds.
 - Also can be done at service level when run out of hardware resources and scale the underlying nodes up/down without taking down the application.
 - All these can be done with the help of set of declerative config file which is know as **kubernetes**.
+![kub-arch](https://techdozo.dev/wp-content/uploads/2021/07/K8-Architecture.png)
+
+- **How kubernetes actually works?**
+  - When a user request to **create a pod**
+  - **kube-api-server** creates the pod as per the requirements
+  - then **kube scheduler** decides which **node** to assign for the pod based on several criterias 
+  - then **kube-api-server** request **kublet** of the node to schedule the pod
+  - then **kublet** request **Container Runtime**(like Docker) to create the POD
+  - then **kubelet** replies to **kube-api-server** with status of the pod created
+  - then **kube-api-server** update the **etcd** about pod creation, on which node pod is created and other information
 
 1. **What is kubernetes?**
 
@@ -51,9 +61,9 @@
    It is a distrbuted reliable key value store by Kubernetes to store all data used to manage the cluster. When you have multiple nodes and multiple Masters in your cluster, etcd stores all that information is a distributed manner.
    It is also responsible for implementing locks within cluster to ensure that there are no conflicts between the masters.
 
-8. **What are schedulers?**
+8. **What are Kube Scheduler?**
 
-   It is responsible for distributing work or containers. It looks for newly created containers and assign them to nodes.
+   The Kubernetes scheduler is a control plane process which **assigns Pods to Nodes.** The scheduler determines which Nodes are valid placements for each Pod in the scheduling queue according to constraints and available resources.
 
 9. **What are controllers?**
 
