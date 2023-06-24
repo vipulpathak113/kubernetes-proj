@@ -43,6 +43,17 @@
 
    It is a set of nodes grouped together.This way if one node fails your application will be still accessible from other nodes. Having multiple nodes helps in sharing the load as well.
 
+   We can setup clusters on local or cloud:
+
+     **Local Cluster setup:**
+      - **Minikube:** **Single node**, Used for educational purposes.
+      - **Kubeadm:** **Multinode** with single master, Used for development and testing purpose
+      
+    **Cloud Cluster Setup:**
+      - Azure
+      - GCP
+      - AWS
+
 4. **What are Master Node?**
 
    It is another node with kubernetes installed and is configured as Master.
