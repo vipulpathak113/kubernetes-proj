@@ -217,7 +217,11 @@ spec:
 - Replicaset is interlinked with image version, if image version is changed then new replicaset will be created and old will be not deleted but its pod will be deleted
 - **Only 1 replicaset will be active per deployment**
 - ReplicaSet manages pods , if one pods goes down then it will create new pods
-
+- It will always try to match desired pod, even if you delete a pod it will be recreated to match the desired number of pods
+- To forcefully delete a pod use :
+  ```yml
+   --grace-period=0 --force
+  ```
 ---
 
 **ClusterIP:**
