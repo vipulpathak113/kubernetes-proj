@@ -158,7 +158,7 @@
         - Node leases allow the kubelet to send heartbeats so that the control plane can detect node failure.
         - It determines node availability.
 
-  Namespaces communicate with each other using the f**ully qualified domain name (FQDN).**
+    Namespaces communicate with each other using the **fully qualified domain name (FQDN).**
   ```<service-name>.<namespace-name>.svc.cluster.local ```     
 
 20. **What is a Kubernetes controller?**
