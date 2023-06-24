@@ -129,7 +129,7 @@
 
 17. **What is a Deployment in Kubernetes?**
 
-    A Deployment in Kubernetes is a higher-level abstraction that manages the deployment of multiple Pods. It ensures that a specified number of replica Pods are running at any given time and allows for rolling updates and rollbacks. Deployments provide a declarative way to manage the state of applications and ensure consistency across environments.
+    A Deployment in Kubernetes is a higher-level abstraction that manages the deployment of multiple Pods. **It ensures that a specified number of replica Pods are running at any given time and allows for rolling updates and rollbacks.** Deployments provide a declarative way to manage the state of applications and ensure consistency across environments.
 
 18. **What is a Service in Kubernetes?**
 
@@ -163,7 +163,7 @@
 
 **PODS with YAML:**
 
-It has 4 root level mandatory properties:\_
+It has 4 root level mandatory properties:
 
 - **apiVersion** > Version of Kubernetes API using to create the objects. Ex: v1,apps/v1
 - **kind** > Refers type of object. Ex: Pod,Service, ReplicaSet, Deployment
@@ -222,6 +222,10 @@ spec:
   ```yml
    --grace-period=0 --force
   ```
+
+  **Problems with Replicaset:**
+    - Downtime if we change version of pods. It deletes all pods then create new pods
+    - Cannot rollback to previous version   
 ---
 
 **ClusterIP:**

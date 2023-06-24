@@ -34,8 +34,6 @@ spec:
     spec:
       containers:
         - name: kube-proj
-
           image: vipulpathak/react-app
-
           ports:
             - containerPort: 80
