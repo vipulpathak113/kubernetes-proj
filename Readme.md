@@ -139,6 +139,28 @@
 
     It provides a way to partition and isolates resources within a cluster, allowing multiple teams or applications to share the same physical infrastructure. Namespaces provide a way to organize and manage resources based on their logical grouping and enable role-based access control and resource quotas.
 
+    - Names of resources need to be unique within a namespace, but not across namespaces.
+    - Namespaces cannot be nested inside one another and each Kubernetes resource can only be in one namespace.
+    - Not all objects are in a namespace like **nodes and persistentVolumes**
+
+    **Initial namespaces:**
+      - **default:** Its the default namespace assigned when no namespace is provided
+      - **kube-system:** 
+        - kube-system is the namespace for objects created by the Kubernetes system.
+        - We should avoid putting anything personal in that namespace.
+        - It would contain pods like **kube-dns, kube-proxy, kube-API**, and others controllers.
+      - **kube-public:** 
+        - Used for public resources and readable by all users
+        - This namespace is mostly reserved for cluster usage not recommended for other Kubernetes users.
+        - It contains the **configmap** that has cluster information. 
+      - **kube-node-lease:**  
+        - This namespace holds the heartbeats of nodes and each node is associated to lease object in the namespace.
+        - Node leases allow the kubelet to send heartbeats so that the control plane can detect node failure.
+        - It determines node availability.
+
+  Namespaces communicate with each other using the f**ully qualified domain name (FQDN).**
+  ```<service-name>.<namespace-name>.svc.cluster.local ```     
+
 20. **What is a Kubernetes controller?**
 
     A Kubernetes controller is a core component of Kubernetes that manages the state of a cluster. It monitors resources in the cluster and ensures that the desired state is maintained, reconciling any discrepancies that arise. Controllers provide a declarative way to manage resources and ensure consistency across the cluster. Examples of controllers include Deployments, ReplicaSets, StatefulSets, and Jobs.
