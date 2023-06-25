@@ -249,8 +249,9 @@ spec:
     - Downtime if we change version of pods. It deletes all pods then create new pods
     - Cannot rollback to previous version   
 ---
+## Types of Services: 
 
-**ClusterIP:**
+**ClusterIP:** Accessible within the cluster
 
 A ClusterIP service is the default Kubernetes service. It gives you a service inside your cluster that other apps inside your cluster can access. There is no external access.
 
@@ -270,7 +271,7 @@ $ kubectl proxy --port=8080
 
 ---
 
-**NodePort:**
+**NodePort:** Accessible from outside but only in the same network.
 
 A NodePort service is the most primitive way to get external traffic directly to your service. NodePort, as the name implies, opens a specific port on all the Nodes (the VMs), and any traffic that is sent to this port is forwarded to the service.
 
